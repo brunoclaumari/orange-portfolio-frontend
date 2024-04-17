@@ -1,0 +1,56 @@
+<!-- <p>form-registrer works!</p> -->
+<mat-card-content >
+  <form [formGroup]="formLogin" class="form__content">
+    <div class="titulo__form">
+      <label *ngIf="isRegister; else elseBlock" >Cadastre-se</label>
+      <ng-template #elseBlock>
+        <label>Fazer Login</label>
+      </ng-template>
+    </div>
+    <div *ngIf="isRegister" class="nome__container">
+      <mat-form-field appearance="outline" class="field__name" >
+        <mat-label>Nome</mat-label>
+        <input  matInput placeholder="Nome" formControlName="nome">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field__name" >
+        <mat-label>Sobrenome</mat-label>
+        <input  matInput placeholder="Sobrenome" formControlName="sobrenome">
+      </mat-form-field>
+    </div>
+      <mat-form-field appearance="outline" class="field__login" >
+        <mat-label>E-mail</mat-label>
+        <input (change)="printEmail()" matInput placeholder="Digite seu email" formControlName="email">
+        <mat-icon matSuffix>email</mat-icon>
+        <mat-error *ngIf="formLogin.get('email')?.invalid">{{getErrorMessageEmail()}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="field__login">
+        <mat-label>Senha</mat-label>
+        <input matInput (focus)="focoSenha(true)"
+        type="{{hide ? 'password' : 'text'}}"
+        placeholder="Digite sua senha"  formControlName="password" required>
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+
+      </mat-form-field>
+      <mat-card-footer class="buttonContainer">
+        <button mat-raised-button
+        class="buttonStyle"
+        color="warn" (click)="loginEntrar()" >{{isRegister?'CADASTRAR':'ENTRAR'}}</button>
+
+        <button *ngIf="!isRegister" class="cadastre__se"  >
+          <div (click)="fazRegistro()" style="color: #818388;font-size: 16px;" >Cadastre-se</div>
+        </button>
+      </mat-card-footer>
+
+      <div *ngIf="focoNaSenha" class="errors__container">
+        <mat-error *ngIf="formLogin.get('password')?.invalid">{{getErrorPassword()}}</mat-error>
+        <mat-error *ngIf="aoMenosMinuscula.exec(formLogin.get('password')?.value) === null">* Senha deve ter ao menos uma letra minúscula</mat-error>
+        <mat-error *ngIf="aoMenosumaMaiuscula.exec(formLogin.get('password')?.value) === null">* Senha deve ter ao menos uma letra maiúscula</mat-error>
+        <mat-error *ngIf="aoMenosUmDigito.exec(formLogin.get('password')?.value) === null">* Senha deve ter ao menos um dígito numérico</mat-error>
+        <mat-error *ngIf="aoMenosUmCaracterEspecial.exec(formLogin.get('password')?.value) === null">* Senha Deve ter ao menos um caracter especial</mat-error>
+        <mat-error *ngIf="aoMenos8caracteres.exec(formLogin.get('password')?.value) === null">* Senha deve ter mínimo 8 caracteres</mat-error>
+      </div>
+    </form>
+
+</mat-card-content>
