@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -23,7 +23,14 @@ export class FormRegistrerComponent implements OnInit {
   hide: boolean = true;
   focoNaSenha:boolean = false;
 
+  panelLogin:string = '../../../assets/painel_login.png';
+  panelCadastro:string = '../../../assets/img_cadastro.png';
+
   @Input() isRegister:boolean = false;
+
+  @Output() alterouImagem = new EventEmitter();
+
+  @Input() sourceImage:string = "";
 
 
   //objetoToken:Observable<RetornoToken>=new Observable<RetornoToken>();
@@ -77,12 +84,31 @@ export class FormRegistrerComponent implements OnInit {
 
   }
 
+  fazAcaoCadastro(){
+    if(this.isRegister){
+      this.cadastraUsuario();
+    }
+    else{
+      this.loginEntrar();
+    }
+  }
+
   loginEntrar(){
 
   }
 
-  fazRegistro(){
+  cadastraUsuario(){
+
+  }
+
+  habilitaRegistro(){
     this.isRegister = true;
+    this.sourceImage = this.panelCadastro;
+
+    this.alterouImagem.emit({novaImagem: this.sourceImage});
+    console.log(this.sourceImage)
+    //this.alterou.emit({isRegisterPai: this.isRegister});
+    //this.isRegister = true;
   }
 
 }
