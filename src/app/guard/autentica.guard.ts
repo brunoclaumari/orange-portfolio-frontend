@@ -6,7 +6,7 @@ import { LoginHelper } from '../helpers/LoginHelper';
 
 export const AutenticaGuard: CanActivateFn = (route, state) =>{
   //var teste = route.params;
-
+  //debugger;
   const router = inject(Router);
   const token = localStorage.getItem('token');
 

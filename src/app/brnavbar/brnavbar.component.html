@@ -1,0 +1,22 @@
+<header class="header__container">
+
+  <!-- <a class="logo" href="#"> -->
+  <a class="logo" href="#">
+    <span (click)="openMenuResponsive()" id="menu_icon" class="material-symbols-outlined">
+      {{menuOpened? 'close' : 'menu'}}
+      </span>
+    <img src="../../assets/Logo orange.png" alt="" />
+  </a>
+
+  <ul [classList]="menuOpened?'navbar main open':'navbar main'">
+    <li><a routerLink="projetos" href="" >Meus projetos</a></li>
+    <li><a routerLink="descobrir" href="" >Descobrir</a></li>
+  </ul>
+  <div class="avatar__container" >
+    <img src="../../assets/avatar_girl.png" alt="perfil__thumb" />
+    <img src="../../assets/icon_bell.png" alt="sininho" />
+    <div  class="bx bx-menu" id="menu-icon" ></div>
+  </div>
+</header>
+
+<!-- <p>brnavbar works!</p> -->

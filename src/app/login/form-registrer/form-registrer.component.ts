@@ -3,6 +3,9 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { LoginService } from '../service/login.service';
+import { Observable, catchError, of } from 'rxjs';
+import { RetornoToken } from 'src/app/models/RetornoToken';
 
 @Component({
   selector: 'app-form-registrer',
@@ -23,6 +26,11 @@ export class FormRegistrerComponent implements OnInit {
   hide: boolean = true;
   focoNaSenha:boolean = false;
 
+
+  objetoToken:Observable<RetornoToken>=new Observable<RetornoToken>();
+
+  oToken:RetornoToken | undefined;
+
   panelLogin:string = '../../../assets/painel_login.png';
   panelCadastro:string = '../../../assets/img_cadastro.png';
 
@@ -39,9 +47,9 @@ export class FormRegistrerComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    //private authService: AuthService,
+    private loginService: LoginService,
     private router: Router,
-    //private toastr: ToastrService,
+    private toastr: ToastrService,
     private activeRoute: ActivatedRoute,
 
     ) {
@@ -70,14 +78,28 @@ export class FormRegistrerComponent implements OnInit {
   }
 
   focoSenha(temFoco:boolean){
-
+    this.focoNaSenha = temFoco;
   }
 
-  getErrorMessageEmail(){
+  getErrorMessageEmail() {
+    if (this.formLogin.get('email')?.hasError('required')) {
+      return 'Campo email é obrigatório';
+    }
 
+    return this.formLogin.get('email')?.hasError('email')?'Email inválido' : '';
   }
+
+
   getErrorPassword(){
+    if (this.formLogin.get('password')?.hasError('required')) {
+      return '* Campo senha é obrigatório';
+    }
+    const senha:string = this.formLogin.get('password')?.value;
 
+    let match = this.senhaForte.exec(senha);
+    console.log(match);
+
+    return '';
   }
 
   printEmail(){
@@ -94,7 +116,52 @@ export class FormRegistrerComponent implements OnInit {
   }
 
   loginEntrar(){
+    //debugger;
+    this.focoSenha(true);
 
+    if(this.formLogin.valid && !this.formLogin.get('password')?.invalid){
+      this.fazAutenticacaoLogin();
+    }
+    else{
+      this.toastr.error("Verifique as mensagens de erro no formulário", "Formulário inválido");
+    }
+  }
+
+  fazAutenticacaoLogin(){
+    let msg:string = "";
+
+    this.loginService.autenticaLoginViaBody(this.formLogin.value)
+    .pipe(
+      catchError((erro) => {
+
+        //debugger;
+        if(erro.status == 504){
+          msg = "Erro de acesso ao servidor!!";
+        }
+        else if(erro.status == 404){
+          msg = "Erro de acesso aos dados!!Verifique o funcionamento da API com o administrador";
+        }
+        else if(erro.status == 401){
+          msg = "Email ou senha inválidos! Caso não seja usuário, cadastre-se!!";
+        }
+        else{
+          msg = "Algo deu errado!!";
+        }
+        console.log(`log: ${msg}`);
+
+        this.toastr.error(msg, "Erro");
+        return of([]);
+      })
+    )
+    .subscribe((result) => {
+      this.oToken = result as RetornoToken;
+
+      if(this.oToken.access_token != undefined){
+        localStorage.setItem('token', this.oToken.access_token);
+        this.toastr.success("Login realizado com sucesso", "Tudo certo!");
+        this.router.navigate(['']);
+      }
+    });
   }
 
   cadastraUsuario(){
@@ -102,13 +169,12 @@ export class FormRegistrerComponent implements OnInit {
   }
 
   habilitaRegistro(){
+    //debugger
     this.isRegister = true;
     this.sourceImage = this.panelCadastro;
 
     this.alterouImagem.emit({novaImagem: this.sourceImage});
     console.log(this.sourceImage)
-    //this.alterou.emit({isRegisterPai: this.isRegister});
-    //this.isRegister = true;
   }
 
 }

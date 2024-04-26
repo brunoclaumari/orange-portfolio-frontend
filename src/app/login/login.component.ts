@@ -22,7 +22,9 @@ export class LoginComponent implements OnInit {
   }
 
   onAlterouImagem(event:any){
-    this.sourceImage = event.novaImagem;
+    //debugger;
+    if(event != undefined)
+      this.sourceImage = event.novaImagem;
   }
 
 /*   ngOnChanges(changes: SimpleChanges): void {

@@ -1,7 +1,7 @@
 export const environment = {
   production:false,
-  API:'/',
-  BASE_URL:'',
+  API:'http://localhost:8080/',
+  BASE_URL:'/api',
   CLIENT_ID:'',
   CLIENT_SECRET:''
 };

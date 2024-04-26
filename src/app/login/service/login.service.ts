@@ -18,7 +18,7 @@ export class LoginService {
 * @description Método que faz login passando dados no body
 **/
 autenticaLoginViaBody(form : Partial<LoginEntryDTO>):Observable<RetornoToken>{
-  debugger
+    //debugger;
       const data: LoginEntryDTO = {
         email: '',
         password:''
@@ -28,6 +28,7 @@ autenticaLoginViaBody(form : Partial<LoginEntryDTO>):Observable<RetornoToken>{
         data.password = form.password;
       }
 
+      //debugger
       var teste = `Is production? ${environment.production}`;
       console.info(teste)
 

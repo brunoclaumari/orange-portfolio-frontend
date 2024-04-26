@@ -23,6 +23,9 @@ import { FormRegistrerComponent } from './login/form-registrer/form-registrer.co
 
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { BrnavbarComponent } from './brnavbar/brnavbar.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -31,12 +34,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     LoginComponent,
     ImageComponent,
-    FormRegistrerComponent
+    FormRegistrerComponent,
+    BrnavbarComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule,
+
     FormsModule,
     ReactiveFormsModule,
     MatCardModule,
@@ -50,7 +54,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     MatSnackBarModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    ToastrModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    FontAwesomeModule,
+    ToastrModule.forRoot({
+      preventDuplicates:true,
+      positionClass:'toast-top-center',
+        timeOut:3000,
+        progressBar:true,
+        progressAnimation: 'increasing'
+    }),
+    FontAwesomeModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
