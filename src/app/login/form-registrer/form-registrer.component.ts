@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LoginService } from '../service/login.service';
 import { Observable, catchError, of } from 'rxjs';
 import { RetornoToken } from 'src/app/models/RetornoToken';
+import { RegisterDTO } from 'src/app/models/RegisterDTO';
 
 @Component({
   selector: 'app-form-registrer',
@@ -30,6 +31,9 @@ export class FormRegistrerComponent implements OnInit {
   objetoToken:Observable<RetornoToken>=new Observable<RetornoToken>();
 
   oToken:RetornoToken | undefined;
+
+  usuarioCadastrado:RegisterDTO = {};
+
 
   panelLogin:string = '../../../assets/painel_login.png';
   panelCadastro:string = '../../../assets/img_cadastro.png';
@@ -72,13 +76,28 @@ export class FormRegistrerComponent implements OnInit {
         Validators.pattern(this.aoMenosUmDigito),
         Validators.pattern(this.aoMenosumaMaiuscula),
       ]),
-      nome: new FormControl(),
-      sobrenome: new FormControl()
+      first_name: new FormControl('',[
+        Validators.required,
+        Validators.minLength(3)
+      ]),
+      surname: new FormControl(
+        '',[
+          Validators.required,
+          Validators.minLength(3)
+        ])
     });
   }
 
   focoSenha(temFoco:boolean){
     this.focoNaSenha = temFoco;
+  }
+
+  getErrorMessageNomeSobreNome(controlName:string){
+    if (this.formLogin.get(controlName)?.hasError('required')) {
+      return `Campo ${controlName} é obrigatório`;
+    }
+
+    return this.formLogin.get(controlName)?.hasError('minlength')?`${controlName} deve ter mínimo de 3 letras` : '';
   }
 
   getErrorMessageEmail() {
@@ -127,6 +146,57 @@ export class FormRegistrerComponent implements OnInit {
     }
   }
 
+  cadastraUsuario(){
+    this.focoSenha(true);
+
+    if(this.formLogin.valid && !this.formLogin.get('password')?.invalid){
+      this.fazCadastro();
+    }
+    else{
+      this.toastr.error("Verifique as mensagens de erro no formulário", "Formulário inválido");
+    }
+
+  }
+
+  fazCadastro(){
+    let msg:string = "";
+    let houveErro:boolean = false;
+
+    this.loginService.fazCadastro(this.formLogin.value)
+    .pipe(
+      catchError(erro => {
+
+        debugger;
+        if(erro.status == 504){
+          msg = "Erro de acesso ao servidor!!";
+        }
+        else if(erro.status == 404){
+          msg = "Erro de acesso aos dados!!Verifique o funcionamento da API com o administrador";
+        }
+        else if(erro.status == 422){
+          msg = erro.error['error'];
+        }
+        else{
+          msg = "Algo deu errado!!";
+        }
+        console.log(`log: ${msg}`);
+        houveErro = true;
+
+        this.toastr.error(msg, "Erro");
+        return of([]);
+      })
+    )
+    .subscribe((result) => {
+      debugger;
+
+      if(!houveErro){
+        this.toastr.success("Login realizado com sucesso", "Tudo certo!");
+        this.router.navigate(['login', this.isRegister = false]);
+      }
+    });
+
+  }
+
   fazAutenticacaoLogin(){
     let msg:string = "";
 
@@ -164,9 +234,7 @@ export class FormRegistrerComponent implements OnInit {
     });
   }
 
-  cadastraUsuario(){
 
-  }
 
   habilitaRegistro(){
     //debugger

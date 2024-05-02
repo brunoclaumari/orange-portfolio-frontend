@@ -25,7 +25,7 @@
   margin: auto;
 }
 
-@media screen and (max-width: 630px){
+@media screen and (max-width: 730px){
   .login__image{
     display: none;
   }

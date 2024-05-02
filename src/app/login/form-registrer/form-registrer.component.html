@@ -9,8 +9,7 @@
     </div>
 
     <div
-      *ngIf="!isRegister"
-      style="color: #818388; text-align: center; padding: 0"
+      *ngIf="!isRegister" style="color: #818388; text-align: center; padding: 0"
     >
       <div>
         <button mat-raised-button class="google__button__conteiner">
@@ -27,33 +26,32 @@
     <div *ngIf="isRegister" class="nome__container">
       <mat-form-field appearance="outline" class="field__name">
         <mat-label>Nome</mat-label>
-        <input matInput placeholder="Nome" formControlName="nome" />
+        <input matInput placeholder="Digite seu nome" formControlName="first_name" />
+      <mat-error style="font-size: 10px;margin-bottom: 6px;" *ngIf="formLogin.get('first_name')?.invalid">
+      {{ getErrorMessageNomeSobreNome('first_name') }}</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="field__name">
         <mat-label>Sobrenome</mat-label>
-        <input matInput placeholder="Sobrenome" formControlName="sobrenome" />
+        <input matInput placeholder="Digite seu sobrenome" formControlName="surname" />
+      <mat-error style="font-size: 10px;margin-bottom: 6px;"  *ngIf="formLogin.get('surname')?.invalid">
+      {{ getErrorMessageNomeSobreNome('surname') }}</mat-error>
       </mat-form-field>
     </div>
+
     <mat-form-field appearance="outline" class="field__login">
       <mat-label>E-mail</mat-label>
-      <input
-        (change)="printEmail()"
-        matInput
-        placeholder="Digite seu email"
-        formControlName="email"
-      />
+        <input (change)="printEmail()"
+          matInput placeholder="Digite seu email" formControlName="email" />
       <mat-icon matSuffix>email</mat-icon>
-      <mat-error *ngIf="formLogin.get('email')?.invalid">{{
-        getErrorMessageEmail()
-      }}</mat-error>
+        <mat-error *ngIf="formLogin.get('email')?.invalid">{{
+          getErrorMessageEmail()
+        }}</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="field__login">
       <mat-label>Senha</mat-label>
-      <input
-        matInput
-        (focus)="focoSenha(true)"
+      <input matInput (focus)="focoSenha(true)"
         type="{{ hide ? 'password' : 'text' }}"
         placeholder="Digite sua senha"
         formControlName="password"
